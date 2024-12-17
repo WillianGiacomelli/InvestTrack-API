@@ -1,3 +1,4 @@
+require('dotenv').config();
 const jwt = require('jsonwebtoken');
 
 const verifyAuthentication = (req, res, next) => {
@@ -8,8 +9,6 @@ const verifyAuthentication = (req, res, next) => {
     }
     console.log(authorization);
     const [prefix, token] = authorization.split(" ");
-
-    console.log(prefix, token);
 
     if(prefix !== 'Bearer') {
         return res.status(401).json({error: true, message: 'Invalid token format'});

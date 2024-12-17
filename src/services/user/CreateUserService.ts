@@ -1,38 +1,65 @@
-import { hash } from "bcryptjs";
 import prisma from "../../database";
 import { CreateUserRequest } from "../../models/user/requests/CreateUserRequest";
 import ICreateUserService from "../interfaces/ICreateUserService";
 import { generateHash } from "../../utils/hashProvider";
-import { CreatedUserResponse } from "../../models/user/responses/CreatedUserReponse";
+import { CreatedUserResponse } from "../../models/user/responses/user/CreatedUserReponse";
+import moment from 'moment';
 
-class CreateUserService implements ICreateUserService{
-    async execute({name, email, password}: CreateUserRequest): Promise<CreatedUserResponse> {
+
+class CreateUserService implements ICreateUserService  {
+    async execute({name, cpf, birthDate, email, password}: CreateUserRequest): Promise<CreatedUserResponse> {
         
-        if(!name || !email || !password){
-            throw new Error("Missing parameters");
+        if(!name || !email || !password || !cpf || !birthDate){
+            throw new Error("Estão faltando informações");
         }
 
-        const userAlreadyExists = await prisma.user.findUnique({
+        const userCPFExists = await prisma.user.findUnique({
             where:{
-                email
+                cpf
             }
         })
 
-        if(userAlreadyExists){
-            throw new Error("User already exists");
+
+        if(userCPFExists){
+            throw new Error("Já existe um usuário com este cpf ou email");
         }
 
         const passwordHashed = await generateHash(password);
 
+        console.log(birthDate);
+        
+        const datetimeString = moment({
+            year: birthDate.year,
+            month: birthDate.month - 1,
+            day: birthDate.day,
+          }).startOf('day').format('YYYY-MM-DD HH:mm:ss');
+
+        const datetime = new Date(datetimeString);
+
+        console.log(datetime);
+
         const user = await prisma.user.create({
             data:{
                 name,
-                email,
-                password: passwordHashed
+                cpf,
+                birthDate: datetime
+            }
+        });
+
+        const login = await prisma.login.create({
+            data:{
+                email: email,
+                password: passwordHashed,
+                userId: user.id
             }
         })
+        
+        const userCreated = {
+            ...user,
+            email: login.email
+        }
 
-        return user;
+        return userCreated;
     }
 }
 

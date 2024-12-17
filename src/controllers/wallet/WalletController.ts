@@ -1,18 +1,21 @@
 import { Request, Response } from 'express';
-import CreateUserService from '../../services/user/CreateUserService';
 import AuthUserService from '../../services/user/AuthUserService';
 import { ApiResponse } from '../../models/base/Response';
+import WalletService from '../../services/wallet/WalletService';
 
-const createUser = async (req: Request, res: Response) => {
+const getWallet = async (req: Request, res: Response) => {
     try{
-        const {name, cpf, birthDate, email, password} = req.body;
+        const {userId} = req.query;
 
-        const createUserService = new CreateUserService();
+        const walletService = new WalletService();
 
-        const user = await createUserService.execute({name, cpf, birthDate, email, password});
+        const wallet = await walletService.getwallet({userId: Number(userId)});
         
-        return res.status(201).json(ApiResponse.success("", [user]));
+        return res.status(201).json(ApiResponse.success("", [wallet]));
     }catch(error){
+        if(error.message === "Carteira não encontrada"){
+            return res.status(404).json(ApiResponse.error(error.message));
+        }
         res.status(500).json(ApiResponse.error(error.message));
     }
 }
@@ -31,4 +34,4 @@ const authUser = async (req: Request, res: Response) => {
     }
 }
 
-export { createUser, authUser };
+export { getWallet, authUser };

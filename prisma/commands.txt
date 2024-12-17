@@ -1,0 +1,6 @@
+//Aplica alteraçoes nos models e roda no banco
+npx prisma migrate dev --name nome-da-migration
+
+//Atualiza o client depois de aplicar no banco
+npx prisma generate
+
