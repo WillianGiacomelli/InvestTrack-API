@@ -24,7 +24,7 @@ Este projeto é uma API para gerenciar investimentos, transações e usuários. 
 Clone o repositório em sua máquina local:
 
 ```bash
-git clone <URL-DO-SEU-REPOSITORIO>
+git clone https://github.com/WillianGiacomelli/InvestTrack-API
 cd InvestTrack
 ```
 
