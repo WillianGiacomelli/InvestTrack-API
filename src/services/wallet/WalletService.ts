@@ -1,5 +1,4 @@
 import prisma from "../../database";
-import moment from 'moment';
 import { WalletResponse } from "../../models/wallet/responses/WalletResponse";
 
 class WalletService {
