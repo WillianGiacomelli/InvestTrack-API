@@ -7,7 +7,6 @@ const verifyAuthentication = (req, res, next) => {
     if(!authorization) {
         return res.status(401).json({error: true, message: 'Token not passed'});
     }
-    console.log(authorization);
     const [prefix, token] = authorization.split(" ");
 
     if(prefix !== 'Bearer') {
