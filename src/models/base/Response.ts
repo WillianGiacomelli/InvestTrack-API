@@ -13,7 +13,7 @@ export class ApiResponse{
         return new ApiResponse(false, message, data);
     }
 
-    public static error(message: string){
-        return new ApiResponse(true, message);
+    public static error(message: string, data: any[]= []){
+        return new ApiResponse(true, message, data);
     }
 }

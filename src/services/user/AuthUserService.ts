@@ -60,6 +60,28 @@ class AuthUserService{
         return response;
     }
 
+    async checkToken(token: string) : Promise<any | null> {
+        token = token.trim();
+
+        if(!token){
+            throw new Error("Missing parameters");
+        }
+
+        const decoded = verify(token, process.env.JWT_SECRET as string) as JwtPayload;
+
+        const user = await prisma.user.findUnique({
+            where:{
+                id: decoded.id
+            }
+        });
+
+        if(!user){
+            throw new Error("Faça login novamente");
+        }
+
+        return user;
+    }
+
     async resetPasswordRequest({email}) : Promise<void> {
         email = email.trim();
 
