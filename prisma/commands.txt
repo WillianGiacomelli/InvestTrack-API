@@ -4,3 +4,8 @@ npx prisma migrate dev --name nome-da-migration
 //Atualiza o client depois de aplicar no banco
 npx prisma generate
 
+//Sincronize seu schema com o banco de dados
+npx prisma db push
+
+//Cria uma migration vazia:
+npx prisma migrate dev --create-only --name add_tipo_data

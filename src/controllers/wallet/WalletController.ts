@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import AuthUserService from '../../services/user/AuthUserService';
 import { ApiResponse } from '../../models/base/Response';
 import WalletService from '../../services/wallet/WalletService';
 
@@ -10,7 +9,10 @@ const getWallet = async (req: Request, res: Response) => {
         const walletService = new WalletService();
 
         const wallet = await walletService.getwallet({userId: Number(userId)});
-        
+
+        if(!wallet)
+            return res.status(201).json(ApiResponse.success("Carteira não encontrada", null));        
+
         return res.status(201).json(ApiResponse.success("", [wallet]));
     }catch(error){
         if(error.message === "Carteira não encontrada"){
@@ -20,18 +22,18 @@ const getWallet = async (req: Request, res: Response) => {
     }
 }
 
-const authUser = async (req: Request, res: Response) => {
+const postWallet = async (req: Request, res: Response) => {
     try{
-        const {email, password} = req.body;
+        const {id, name} = req.body;
 
-        const authUserService = new AuthUserService();
+        const walletService = new WalletService();
 
-        const auth = await authUserService.execute({email,password});
+        const wallet = await walletService.createWallet({id, name});
 
-        return res.status(200).json({error: false, message: "", auth});
+        return res.status(201).json(ApiResponse.success("Carteira criada com sucesso", [wallet]));
     }catch(error){
-        res.status(500).json({message: error.message});
+        res.status(500).json(ApiResponse.error(error.message));
     }
 }
 
-export { getWallet, authUser };
+export { getWallet,postWallet };
