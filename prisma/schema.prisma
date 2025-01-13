@@ -82,7 +82,7 @@ model Investment {
   ticker String
   amount Float
   buyingPrice Float
-  sellingPrice Float
+  sellingPrice Float?
   lastTransaction DateTime
   walletId Int
   categoryId Int
