@@ -7,6 +7,7 @@ import assetQuotesRoutes from './routes/AssetQuotesRoutes';
 import investmentCategory from './routes/InvestmentCategory';
 import investmentBroker from './routes/InvestmentBroker';
 import investment from './routes/Investment';
+import investmentTransaction from './routes/InvestmentTransaction';
 
 const swaggerOutput = require('./swagger-output.json');
 
@@ -21,6 +22,7 @@ app.use(walletRoutes);
 app.use(assetQuotesRoutes);
 app.use(investmentCategory);
 app.use(investmentBroker);
+app.use(investmentTransaction);
 app.use(investment);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerOutput));
