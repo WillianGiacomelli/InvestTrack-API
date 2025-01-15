@@ -26,7 +26,6 @@ class CreateUserService implements ICreateUserService  {
 
         const passwordHashed = await generateHash(password);
 
-        console.log(birthDate);
         
         const datetimeString = moment({
             year: birthDate.year,
@@ -35,8 +34,6 @@ class CreateUserService implements ICreateUserService  {
           }).startOf('day').format('YYYY-MM-DD HH:mm:ss');
 
         const datetime = new Date(datetimeString);
-
-        console.log(datetime);
 
         const user = await prisma.user.create({
             data:{

@@ -20,4 +20,18 @@ const getWalletTransactions = async (req: Request, res: Response) => {
     }
 }
 
-export { getWalletTransactions };
+const removeWalletTransaction = async (req: Request, res: Response) => {
+    try{
+        const { transactionId } = req.query;
+
+        const investmentTransactionService = new InvestmentTransactionService();
+
+        const data = await investmentTransactionService.removeTransaction(+transactionId);
+
+        return res.status(204).json(ApiResponse.success("Transação removida com sucesso", []));
+    }catch(error){
+        res.status(500).json(ApiResponse.error(error.message));
+    }
+}
+
+export { getWalletTransactions,removeWalletTransaction };

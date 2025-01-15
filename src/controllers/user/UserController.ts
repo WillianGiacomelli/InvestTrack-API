@@ -48,7 +48,6 @@ const checkToken = async (req: Request, res: Response) => {
 const resetPasswordRequest = async (req: Request, res: Response) => {
     try{
         const {email} = req.body;
-        console.log(email);
         const authUserService = new AuthUserService();
 
         await authUserService.resetPasswordRequest(email);

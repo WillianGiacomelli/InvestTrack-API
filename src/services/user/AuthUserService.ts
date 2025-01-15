@@ -148,7 +148,6 @@ class AuthUserService{
         }
 
         const decoded = verify(token, process.env.JWT_SECRET as string) as JwtPayload;
-        console.log(decoded);
 
         const userLogin = await prisma.login.findUnique({
             where:{

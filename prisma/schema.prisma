@@ -69,9 +69,7 @@ model Transaction {
   amount Float
   modalityId Int?
   investmentId Int?
-  walletId Int?
 
-  wallet     Wallet?   @relation(fields: [walletId], references: [id])
   investment Investment? @relation(fields: [investmentId], references: [id])
   modality Modality? @relation(fields: [modalityId], references: [id])
 
@@ -100,7 +98,6 @@ model Wallet {
   name String 
   userId Int @unique
   investment Investment[]
-  transaction Transaction[]
   user User @relation(fields: [userId], references: [id])
 
   @@map("wallet")
