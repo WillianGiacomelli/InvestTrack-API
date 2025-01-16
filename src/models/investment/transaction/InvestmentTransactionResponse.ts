@@ -8,6 +8,5 @@ export class InvestmentTransactionResponse{
     modalityId: number;
     totalValue: number;
     investmentId: number;
-    walletId: number;
     Investment: InvestmentResponse[];
 }

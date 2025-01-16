@@ -34,4 +34,34 @@ const removeWalletTransaction = async (req: Request, res: Response) => {
     }
 }
 
-export { getWalletTransactions,removeWalletTransaction };
+const putWalletTransaction = async (req: Request, res: Response) => {
+    try{
+        const { ticker,
+            id,
+            investmentId,
+            amount,
+            buyingPrice,
+            lastTransaction,
+            walletId ,
+            categoryId ,
+            brokerId } = req.body;
+
+        const transactionService = new InvestmentTransactionService();
+
+        const data = await transactionService.putTransaction({ ticker,
+                                                                amount,
+                                                                id,
+                                                                investmentId,
+                                                                buyingPrice,
+                                                                lastTransaction,
+                                                                walletId ,
+                                                                categoryId ,
+                                                                brokerId });
+
+        return res.status(200).json(ApiResponse.success("", [data]));
+    }catch(error){
+        res.status(500).json(ApiResponse.error(error.message));
+    }
+}
+
+export { getWalletTransactions,removeWalletTransaction,putWalletTransaction};

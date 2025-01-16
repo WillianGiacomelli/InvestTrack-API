@@ -42,7 +42,6 @@ class InvestmentService  {
             data:{
                 transactionDate: datetimeTransaction,
                 investmentId: investment.id,
-                walletId: Number(walletId),
                 amount: +amount,
                 modalityId: 1, 
                 value: Number(buyingPrice.replace(",", ".")),
@@ -60,7 +59,17 @@ class InvestmentService  {
             }
         });
 
-        return investments;
+        const transactions = await prisma.transaction.findMany({
+            where:{
+                investmentId: {
+                    in: investments.map(investment => investment.id)
+                }
+            }
+        })
+
+        const investmentCategories = investments.map(investment => investment.categoryId);
+        
+        
     }
 
     public async getInvestmentById(investmentId: number): Promise<InvestmentResponse> {
