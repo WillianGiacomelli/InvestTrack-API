@@ -115,7 +115,8 @@ class InvestmentService  {
             const investmentsOverview = {
                 paid,
                 currentTotalValue,
-                totalVariation
+                totalVariation,
+                percentTotalVariation: ((currentTotalValue - paid) / paid) * 100,
             };
 
             return {
