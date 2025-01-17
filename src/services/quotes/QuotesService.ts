@@ -73,6 +73,14 @@ class QuotesService {
         return this.fetchCryptoQuotes(API_URL);
     }
 
+    public async getStocksQuotes() {
+        const API_URL: string = `${this.BRAPI_API_BASE_URL}/quote/list`;
+
+        console.log(API_URL);
+
+        return this.fetchQuotes(API_URL);
+    }
+
     private async fetchQuotes(url: string) : Promise<any> {
         try{
             const response = await fetch(url,{

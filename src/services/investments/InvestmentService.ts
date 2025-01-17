@@ -2,9 +2,18 @@ import prisma from "../../database";
 import moment from 'moment';
 import { InvestmentResponse } from "../../models/investment/InvestmentResponse";
 import { InvestmentRequest } from "../../models/investment/InvestmentRequest";
+import QuotesService from "../quotes/QuotesService";
 
 
 class InvestmentService  {
+    private _quotesService: QuotesService;
+
+    constructor(
+        quotesService = new QuotesService()
+    ){
+        this._quotesService = quotesService;
+    }
+
     public async postInvestment({ 
         ticker,
         amount,
@@ -51,7 +60,7 @@ class InvestmentService  {
         return investment;
     }
 
-    public async getInvestments(walletId: number): Promise<InvestmentResponse[]> {
+    public async getInvestments(walletId: number): Promise<any> {
 
         const investments = await prisma.investment.findMany({
             where:{
@@ -67,8 +76,55 @@ class InvestmentService  {
             }
         })
 
-        const investmentCategories = investments.map(investment => investment.categoryId);
-        
+        const isAnyStockInvestment = investments.some(investment => investment.categoryId == 1);
+
+        if(isAnyStockInvestment){
+            const stockInvestments = investments.filter(investment => { 
+                return investment.categoryId == 1 
+            });
+
+            const tickers = Array.from(new Set(stockInvestments.map(investment => investment.ticker)));
+
+            const quotes = await this._quotesService.getStocksQuotes();
+            let quotesFiltered = quotes.filter(quote => tickers.includes(quote.stock));
+            
+            const investmentsWithQuotes = stockInvestments.map(investment => {
+                const quote = quotesFiltered.find(quote => quote.stock === investment.ticker);
+                if(quote){
+                    return {
+                        ...investment,
+                        currentPrice: quote.close,
+                        percentVariation: ((quote.close - investment.buyingPrice) / investment.buyingPrice) * 100,
+                        paid: investment.amount * investment.buyingPrice,
+                        currentTotalValue: investment.amount * quote.close,
+                        totalVariation: (investment.amount * quote.close) - (investment.amount * investment.buyingPrice),
+                    }
+                }
+            });
+
+            let paid = 0;
+            let currentTotalValue = 0;
+            let totalVariation = 0;
+
+            investmentsWithQuotes.forEach(investment => {
+                paid += investment.paid;
+                currentTotalValue += investment.currentTotalValue;
+                totalVariation += investment.totalVariation;
+            });
+
+            const investmentsOverview = {
+                paid,
+                currentTotalValue,
+                totalVariation
+            };
+
+            return {
+                dashboard:investmentsOverview,
+                investments: investmentsWithQuotes
+            }
+
+        }
+
         
     }
 

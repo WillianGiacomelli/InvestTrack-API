@@ -36,7 +36,7 @@ const getInvestments = async (req: Request, res: Response) => {
 
         const data = await investmentService.getInvestments(+walletId);
 
-        if(data.length === 0) return res.status(200).json(ApiResponse.success("Nenhum investimento encontrado", []));
+        if(!!!data) return res.status(200).json(ApiResponse.success("Nenhum investimento encontrado", []));
 
         return res.status(200).json(ApiResponse.success("", [data]));
     }catch(error){
@@ -44,4 +44,4 @@ const getInvestments = async (req: Request, res: Response) => {
     }
 }
 
-export { postInvestment };
+export { postInvestment, getInvestments };
