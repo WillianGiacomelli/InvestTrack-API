@@ -86,6 +86,7 @@ class InvestmentService  {
             const tickers = Array.from(new Set(stockInvestments.map(investment => investment.ticker)));
 
             const quotes = await this._quotesService.getStocksQuotes();
+            console.log(quotes);
             let quotesFiltered = quotes.filter(quote => tickers.includes(quote.stock));
             
             const investmentsWithQuotes = stockInvestments.map(investment => {
@@ -98,6 +99,7 @@ class InvestmentService  {
                         paid: investment.amount * investment.buyingPrice,
                         currentTotalValue: investment.amount * quote.close,
                         totalVariation: (investment.amount * quote.close) - (investment.amount * investment.buyingPrice),
+                        logo: quote.logo,
                     }
                 }
             });
@@ -117,6 +119,14 @@ class InvestmentService  {
                 currentTotalValue,
                 totalVariation,
                 percentTotalVariation: ((currentTotalValue - paid) / paid) * 100,
+                chart: 
+                    [
+                        {
+                            name: "Ações",  
+                            value: 100,
+                        },
+                    ]
+                
             };
 
             return {
