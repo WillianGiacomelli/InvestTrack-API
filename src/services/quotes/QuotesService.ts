@@ -75,9 +75,7 @@ class QuotesService {
 
     public async getStocksQuotes() {
         const API_URL: string = `${this.BRAPI_API_BASE_URL}/quote/list`;
-
-        console.log(API_URL);
-
+        
         return this.fetchQuotes(API_URL);
     }
 

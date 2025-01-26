@@ -86,7 +86,6 @@ class InvestmentService  {
             const tickers = Array.from(new Set(stockInvestments.map(investment => investment.ticker)));
 
             const quotes = await this._quotesService.getStocksQuotes();
-            console.log(quotes);
             let quotesFiltered = quotes.filter(quote => tickers.includes(quote.stock));
             
             const investmentsWithQuotes = stockInvestments.map(investment => {
