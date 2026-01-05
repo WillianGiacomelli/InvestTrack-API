@@ -97,6 +97,58 @@ A API estará disponível em `http://localhost:3000`.
 
 Você pode testar a API com ferramentas como **Postman** ou **Insomnia**, fazendo chamadas HTTP aos endpoints disponíveis.
 
+
+### 🐳 Executando com Docker
+Caso prefira rodar a aplicação isolada sem instalar o Node.js ou MySQL localmente, siga os passos abaixo para criar a rede e os containers manualmente.
+
+1. Criar uma Rede Docker
+Para que o container da API consiga "enxergar" o container do Banco de Dados, precisamos criar uma rede virtual:
+
+```bash
+docker network create invest-net
+```
+
+2. Rodar o Banco de Dados (MySQL)
+Inicie o container do MySQL conectado à rede criada acima:
+
+```bash
+docker run -d \
+  --name invest-db \
+  --network invest-net \
+  -e MYSQL_ROOT_PASSWORD=root \
+  -e MYSQL_DATABASE=investtrack \
+  -p 3306:3306 \
+  mysql:8.0
+```
+
+3. Construir a Imagem da API
+Na raiz do projeto, construa a imagem do backend:
+
+```bash
+docker build -t investtrack-api .
+```
+
+4. Rodar a API Conectada ao Banco
+Inicie o container da API. Note que na DATABASE_URL usamos invest-db (o nome do container do banco) em vez de localhost.
+
+```bash
+docker run -d \
+  --name invest-api \
+  --network invest-net \
+  -p 3000:3000 \
+  -e DATABASE_URL="mysql://root:root@invest-db:3306/investtrack" \
+  investtrack-api
+```
+
+5. Criar as Tabelas (Migration)
+Como o banco de dados do Docker é novo, ele está vazio. Execute o comando de migração de dentro do container da API:
+
+```bash
+docker exec -it invest-api npx prisma migrate dev --name init
+```
+
+Pronto! Sua API está rodando em http://localhost:3000 e conectada ao banco Docker.
+
 ## Comandos Úteis
 
 - **Gerar Prisma Client**: Regenera o Prisma Client após alterações no schema.
